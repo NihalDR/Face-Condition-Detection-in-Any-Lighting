@@ -1,52 +1,115 @@
 # Face Condition Detection in Any Lighting
 
-A real-time Flutter app that detects faces and analyzes their condition in any lighting environment. This advanced system works seamlessly across **Android** and **iOS**, providing intelligent lighting adaptation and real-time feedback.
+## Overview
+
+**Face Condition Detection in Any Lighting** is a sophisticated Flutter mobile application designed to detect human faces in real-time camera streams and intelligently analyze their condition while adapting to various lighting environments. The application provides comprehensive feedback on face detection quality, lighting conditions, brightness levels, and contrast analysis—making it ideal for quality assurance in face recognition pipelines, video conferencing optimization, biometric authentication systems, and accessibility applications.
+
+This project is a **CCExtractor Organization Take-home Qualification Task for GSOC 2026**.
+
+---
+
+## Table of Contents
+
+1. [Features](#features)
+2. [System Requirements](#system-requirements)
+3. [Installation Guide](#installation-guide)
+4. [Usage Instructions](#usage-instructions)
+5. [Application Interface](#application-interface)
+6. [Supported Platforms](#supported-platforms)
+7. [Camera Permissions](#camera-permissions)
+8. [FAQ](#faq)
+9. [Troubleshooting](#troubleshooting)
+10. [Contributing](#contributing)
+11. [License](#license)
+
+---
 
 ## Features
 
-### Core Capabilities
-- **Real-Time Face Detection**: Uses Google ML Kit for fast, accurate face detection
-- **Lighting-Aware Analysis**: Automatically detects and adapts to different lighting conditions
-  - **Too Dark**: Brightness < 10%
-  - **Dark**: Brightness 10-30%
-  - **Optimal**: Brightness 30-70%
-  - **Bright**: Brightness 70-85%
-  - **Too Bright**: Brightness > 85%
+### Core Functionality
 
-### Quality Assessment
-The app evaluates face detection quality on a 5-level scale:
-- **Not Detected**: No face in frame
-- **Poor**: Faces in very poor lighting or multiple faces
-- **Fair**: Multiple faces or suboptimal lighting
-- **Good**: Single face in good lighting
-- **Excellent**: Optimal conditions with high contrast
+#### 1. **Real-Time Face Detection**
+- Continuous face detection using Google ML Kit
+- Ultra-fast detection with minimal latency
+- Simultaneous detection of multiple faces with individual quality assessment
+- Face tracking capabilities for smoother detection results
 
-### Intelligent Features
-- **Real-Time Metrics**:
-  - Brightness percentage calculation
-  - Contrast analysis for image quality
-  - Exposure adjustment recommendations (-1.0 to 1.0 scale)
-  
-- **User-Friendly Guidance**:
-  - Contextual recommendations for better detection
-  - Color-coded status indicators
-  - Live feedback on frame quality
+#### 2. **Lighting Condition Analysis**
+The application automatically categorizes lighting into 5 distinct levels:
 
-## Technical Stack
+| Lighting Condition | Brightness Range | Visual Indicator | Recommendation |
+|---|---|---|---|
+| **Too Dark** | < 10% | Dark Gray | Enable flash or increase ambient light |
+| **Dark** | 10-30% | Gray | Move to brighter area |
+| **Optimal** | 30-70% | Green | Perfect for face detection |
+| **Bright** | 70-85% | Orange | Slightly reduce light exposure |
+| **Too Bright** | > 85% | Red | Reduce light or reposition |
 
-### Dependencies
-- `camera: ^0.10.8+1` - Camera stream access
-- `google_mlkit_face_detection: ^0.8.0` - ML Kit face detection
-- `image: ^4.0.17` - Image processing
-- `permission_handler: ^11.4.4` - Runtime permission management
-- `provider: ^6.0.0` - State management
+#### 3. **Quality Assessment System**
+The app evaluates detected faces on a 5-level quality scale:
 
-### Architecture
-1. **FaceConditionAnalyzer**: Core analysis engine
-   - Brightness and contrast calculation
-   - Lighting condition determination
-   - Face quality assessment
-   - Recommendation generation
+| Quality Level | Criteria | Status | Color Code |
+|---|---|---|---|
+| **Not Detected** | No face in frame | ❌ | Red |
+| **Poor** | Multiple faces or extreme lighting | ⚠️ | Dark Red |
+| **Fair** | Multiple faces or suboptimal lighting | ⚠️ | Orange |
+| **Good** | Single face in good lighting | ✓ | Light Green |
+| **Excellent** | Optimal conditions with high contrast | ✓✓ | Green |
+
+#### 4. **Real-Time Metrics**
+- **Brightness Percentage**: Live brightness level (0-100%)
+- **Contrast Analysis**: Measurement of contrast quality (0-100%)
+- **Exposure Adjustment**: Recommended adjustment on -1.0 to +1.0 scale
+- **Face Count**: Number of faces detected in current frame
+- **Confidence Scores**: ML Kit face detection confidence metrics
+
+#### 5. **Intelligent Recommendations**
+The app provides contextual, actionable recommendations based on detected conditions:
+- Lighting adjustment suggestions
+- Face positioning guidance
+- Distance recommendations
+- Multiple face detection alerts
+
+#### 6. **User-Friendly Interface**
+- Color-coded visual indicators for instant feedback
+- Real-time metric display overlay
+- Smooth animations and transitions
+- Intuitive navigation and controls
+
+---
+
+## System Requirements
+
+### Hardware Requirements
+
+#### Android
+- **Minimum SDK**: Android 5.0 (API Level 21)
+- **Target SDK**: Android 12+ (API Level 31+)
+- **RAM**: Minimum 2 GB (4 GB+ recommended)
+- **Storage**: Minimum 100 MB free space
+- **Camera**: Front-facing camera required
+- **Processor**: Qualcomm Snapdragon 400 series or equivalent
+
+#### iOS
+- **Minimum iOS Version**: iOS 12.0
+- **Target iOS Version**: iOS 15.0+
+- **Device**: iPhone 6s or later (iPhone Xs or later recommended)
+- **RAM**: Minimum 2 GB available
+- **Storage**: Minimum 100 MB free space
+- **Camera**: Front-facing camera required
+
+### Development Requirements
+
+#### For Building from Source
+- **Flutter SDK**: Version 3.0.0 or higher
+- **Dart SDK**: Version 3.0.0 or higher
+- **Android Studio**: Version 2021.1.1 or later (for Android development)
+- **Xcode**: Version 13.0 or later (for iOS development)
+- **CocoaPods**: Version 1.11.0 or later (for iOS dependencies)
+
+#### System Dependencies
+- Java Development Kit (JDK) 11 or higher (for Android)
+- Xcode Command Line Tools (for iOS)
 
 2. **CameraStreamHandler**: Real-time pipeline
    - Camera initialization and lifecycle
@@ -79,7 +142,7 @@ The app evaluates face detection quality on a 5-level scale:
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/akmadan/flutter_live_emotion.git
+git clone https://github.com/NihalDR/Face-Condition-Detection-in-Any-Lighting.git
 cd flutter_live_emotion
 ```
 
