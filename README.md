@@ -1,4 +1,4 @@
-# Face Condition Detection in Any Lighting
+# Face Condition Detection
 
 ## Overview
 
