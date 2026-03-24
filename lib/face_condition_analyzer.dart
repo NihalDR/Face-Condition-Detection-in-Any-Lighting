@@ -28,6 +28,8 @@ class FaceConditionResult {
   final List<double>? faceConfidence;
   final double exposureAdjustment; // -1.0 to 1.0
   final String recommendation;
+  final String? emotion;
+  final double emotionConfidence; // 0.0 to 1.0
 
   FaceConditionResult({
     required this.faceDetected,
@@ -39,6 +41,8 @@ class FaceConditionResult {
     this.faceConfidence,
     required this.exposureAdjustment,
     required this.recommendation,
+    this.emotion,
+    this.emotionConfidence = 0.0,
   });
 }
 
@@ -226,6 +230,15 @@ class FaceConditionAnalyzer {
         quality,
       );
 
+      // Mock emotion detection (you can replace with TFLite model)
+      String? emotion;
+      double emotionConfidence = 0.0;
+      if (faceDetected && quality != FaceQuality.notDetected) {
+        // For now, return a mock emotion
+        emotion = 'Happy';
+        emotionConfidence = 0.85;
+      }
+
       return FaceConditionResult(
         faceDetected: faceDetected,
         faceCount: faceCount,
@@ -236,6 +249,8 @@ class FaceConditionAnalyzer {
         faceConfidence: faceConfidence,
         exposureAdjustment: exposureAdjustment,
         recommendation: recommendation,
+        emotion: emotion,
+        emotionConfidence: emotionConfidence,
       );
     } catch (e) {
       print('Error analyzing face condition: $e');
@@ -249,6 +264,8 @@ class FaceConditionAnalyzer {
         faceConfidence: null,
         exposureAdjustment: 0.0,
         recommendation: 'Error analyzing frame',
+        emotion: null,
+        emotionConfidence: 0.0,
       );
     }
   }
