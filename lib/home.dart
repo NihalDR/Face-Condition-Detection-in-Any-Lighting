@@ -141,239 +141,257 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Face Detection in Any Lighting'),
-          backgroundColor: Colors.deepPurple[600],
-          elevation: 0,
-        ),
+        backgroundColor: Colors.black,
         body: _permissionStatus.isNotEmpty
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.camera_alt_outlined, size: 64),
+                    const Icon(Icons.camera_alt_outlined,
+                        size: 64, color: Colors.white),
                     const SizedBox(height: 16),
                     Text(
                       _permissionStatus,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ],
                 ),
               )
             : !_isInitialized
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(color: Colors.white))
                 : _buildCameraPreview(),
       ),
     );
   }
 
   Widget _buildCameraPreview() {
-    return Column(
+    return Stack(
       children: [
         // Camera Preview
-        Expanded(
-          flex: 2,
-          child: Container(
-            color: Colors.black,
-            child: cameraHandler.controller != null &&
-                    cameraHandler.controller!.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio:
-                        cameraHandler.controller!.value.aspectRatio,
-                    child: CameraPreview(cameraHandler.controller!),
-                  )
-                : const Center(child: CircularProgressIndicator()),
-          ),
+        Container(
+          color: Colors.black,
+          child: cameraHandler.controller != null &&
+                  cameraHandler.controller!.value.isInitialized
+              ? CameraPreview(cameraHandler.controller!)
+              : const Center(
+                  child: CircularProgressIndicator(color: Colors.white)),
         ),
 
-        // Condition Indicators and Info
-        Expanded(
-          flex: 1,
-          child: SingleChildScrollView(
-            child: ValueListenableBuilder<FaceConditionResult?>(
-              valueListenable: cameraHandler.resultNotifier,
-              builder: (context, result, _) {
-                if (result == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        // Header with LIVE indicator
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 12,
+              left: 16,
+              right: 16,
+              bottom: 12,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[400],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.face, color: Colors.white, size: 24),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Emotion AI',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
                     children: [
-                      // Face Detection Status
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: result.faceDetected
-                              ? Colors.green[100]
-                              : Colors.red[100],
-                          border: Border.all(
-                            color: result.faceDetected
-                                ? Colors.green[600]!
-                                : Colors.red[600]!,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              result.faceDetected
-                                  ? Icons.face
-                                  : Icons.face_rounded,
-                              color: result.faceDetected
-                                  ? Colors.green[600]
-                                  : Colors.red[600],
-                            ),
-                            const SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  result.faceDetected
-                                      ? 'Face Detected'
-                                      : 'No Face Detected',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                if (result.faceDetected)
-                                  Text(
-                                    'Count: ${result.faceCount}',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      CircleAvatar(
+                        radius: 4,
+                        backgroundColor: Colors.white,
                       ),
-
-                      const SizedBox(height: 12),
-
-                      // Quality Indicator
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: _getQualityColor(result.quality)
-                              .withOpacity(0.1),
-                          border: Border.all(
-                            color: _getQualityColor(result.quality),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.visibility,
-                              color: _getQualityColor(result.quality),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Quality: ${_getQualityLabel(result.quality)}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: _getQualityColor(result.quality),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Lighting Condition
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: _getLightingColor(result.lighting)
-                              .withOpacity(0.1),
-                          border: Border.all(
-                            color: _getLightingColor(result.lighting),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.light_mode,
-                                  color: _getLightingColor(result.lighting),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Lighting: ${_getLightingLabel(result.lighting)}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: _getLightingColor(result.lighting),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Brightness: ${(result.brightness * 100).toStringAsFixed(1)}%',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'Contrast: ${(result.contrast * 100).toStringAsFixed(1)}%',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Recommendation
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          border: Border.all(color: Colors.blue[600]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              color: Colors.blue[600],
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                result.recommendation,
-                                style: TextStyle(
-                                  color: Colors.blue[900],
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                      SizedBox(width: 6),
+                      Text(
+                        'LIVE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                );
-              },
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Bottom Info Panel
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: ValueListenableBuilder<FaceConditionResult?>(
+            valueListenable: cameraHandler.resultNotifier,
+            builder: (context, result, _) {
+              if (result == null) {
+                return const SizedBox.shrink();
+              }
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Face Detected Row
+                    _buildInfoRow(
+                      icon: Icons.face,
+                      label: 'Face Detected',
+                      value: result.faceDetected ? 'Yes' : 'No',
+                      valueColor: result.faceDetected
+                          ? Colors.green
+                          : Colors.grey[600]!,
+                      iconColor:
+                          result.faceDetected ? Colors.green : Colors.grey[600]!,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Emotion Row
+                    _buildInfoRow(
+                      icon: Icons.sentiment_satisfied_alt,
+                      label: 'Emotion',
+                      value: result.emotion ?? 'Unknown',
+                      valueColor: Colors.grey[400]!,
+                      iconColor: Colors.grey[400]!,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Confidence Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.confidence_level,
+                              color: Colors.purple,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'Confidence',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '${(result.emotionConfidence * 100).toStringAsFixed(0)}%',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Lighting Row
+                    _buildInfoRow(
+                      icon: Icons.wb_sunny,
+                      label: 'Lighting',
+                      value: _getLightingLabel(result.lighting),
+                      valueColor: _getLightingColor(result.lighting),
+                      iconColor: _getLightingColor(result.lighting),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color valueColor,
+    required Color iconColor,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              icon,
+              color: iconColor,
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: valueColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: valueColor.withOpacity(0.5),
+            ),
+          ),
+          child: Text(
+            value,
+            style: TextStyle(
+              color: valueColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

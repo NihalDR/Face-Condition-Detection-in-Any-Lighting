@@ -17,9 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Face Detection in Any Lighting',
+      title: 'Emotion AI',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        brightness: Brightness.dark,
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
