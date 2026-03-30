@@ -282,8 +282,6 @@ contrast = stdDev(luminances) / 0.5  // Normalized to 0-1
   <img src="https://github.com/user-attachments/assets/47c5a635-cab4-427b-a592-877d103db0c5" width="250"/>
 </p>
 
-
-
 ## License
 
 This project is provided as-is for educational and research purposes.
