@@ -263,14 +263,14 @@ luminance = (0.299 * R + 0.587 * G + 0.114 * B) / 255.0
 ```
 contrast = stdDev(luminances) / 0.5  // Normalized to 0-1
 ```
-## Demo
+##  Demo
 
 <p align="center">
   <video width="630" height="300" src="https://github.com/user-attachments/assets/3aa1e451-f528-479f-9cab-c652cafb8424" controls></video>
   </a>
 </p>
 
-## Screenshots
+##  Screenshots
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/284d2293-5b89-43d6-968e-ba83934dc54a" width="250"/>
