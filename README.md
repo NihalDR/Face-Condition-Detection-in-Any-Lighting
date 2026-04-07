@@ -293,3 +293,5 @@ Built with Flutter, Google ML Kit, and modern mobile development best practices.
 ## Support
 
 For issues or feature requests, please open an issue on the repository.
+## Contact
+nihaldr77@gmail.com
